@@ -3,6 +3,10 @@
       <div>
     <div class = "d-flex" v-for="(outerArray, outerIndex) in nestedArray" :key="outerIndex">
         <chessboard :fen="position" />
+      <div class="controls">
+      <button @click="goToMove(-1)" :disabled="count === 0">Previous</button>
+      <button @click="goToMove(1)" :disabled="count === pgnMoves.length - 1">Next</button>
+    </div>
       <div class = "move-grid">  
       <div v-for="(innerObject, innerIndex) in outerArray" :key="innerIndex">
        <p :style="getParagraphStyle(innerObject.mistake)"> {{ innerObject.move}} </p> <!-- Output the value of the key you want -->
@@ -52,9 +56,6 @@ export default {
   mounted() {
     this.fetchJson();
     this.fetchGames();
-    setTimeout(() => {
-      this.playMoves(); // `this` will correctly refer to the Vue instance
-    }, 7000);
   },
   methods: {
     increment() {
@@ -67,19 +68,23 @@ export default {
         return { color: "black" }; // Set the color to black for non-mistakes
       }
     },
-    playMoves() {
+  
+     goToMove(step) {
+         console.log("goToMove")
+         console.log(step)
+      if (this.count + step >= 0 && this.count + step < this.pgnMoves.length) {
+        this.count += step;
+        this.position = this.getPositionForMove(this.count);
+      }
+    },
+    getPositionForMove(moveIndex) {
+      console.log("getPositionForMove")
+      console.log(moveIndex)  
       let position = new Chess();
-      let delay = 1000; // Delay between moves (in milliseconds)
-
-      this.pgnMoves.forEach((move, index) => {
-        console.log(move);
-        setTimeout(() => {
-          let result = position.move(move);
-          if (result) {
-            this.position = position.fen();
-          }
-        }, index * delay);
-      });
+      for (let i = 0; i <= moveIndex; i++) {
+        position.move(this.pgnMoves[i]);
+      }
+      return position.fen();
     },
    
     fetchGames() {
