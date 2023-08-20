@@ -31,6 +31,7 @@ export default {
   data() {
     return {
       nestedArray: [], // This will hold your API data
+      pgns: [],
       position: "start",
       count: 0,
       pgnMoves: [
@@ -71,7 +72,7 @@ export default {
   
      goToMove(step) {
          console.log("goToMove")
-         console.log(step)
+         console.log(this.position)
       if (this.count + step >= 0 && this.count + step < this.pgnMoves.length) {
         this.count += step;
         this.position = this.getPositionForMove(this.count);
@@ -105,10 +106,11 @@ export default {
       fetch("http://localhost:5000/get_pgn") // Make GET request to Flask server
         .then((response) => response.json()) // Parse the response as JSON
         .then((data) => {
-          console.log(data.objects[0].moves); // Display the fetched games data in the console
+         // console.log(data.objects[0].moves); // Display the fetched games data in the console
           let arr = data.objects[0].moves.split(" ")
-          console.log(arr)
-           this.pgnMoves = arr
+          this.pgnMoves = arr
+          this.pgns = data.objects
+          console.log(this.pgns)
         })
         .catch((error) => {
           console.error("Error fetching games:", error);
