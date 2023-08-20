@@ -19,7 +19,7 @@
       </div>
       <div class="move-grid">
         <div v-for="(innerObject, innerIndex) in outerArray" :key="innerIndex">
-          <p :style="getParagraphStyle(innerObject.mistake)">
+          <p :style="getParagraphStyle(outerArray[innerIndex + 1]?.next_mistake)">
             {{ innerObject.move }}
           </p>
         </div>
@@ -102,10 +102,10 @@ export default {
       fetch("http://localhost:5000/get_pgn") // Make GET request to Flask server
         .then((response) => response.json()) // Parse the response as JSON
         .then((data) => {
-          // console.log(data.objects[0].moves); // Display the fetched games data in the console
+          console.log(data.objects); // Display the fetched games data in the console
           // Initialize the pgnArray with individual PGNs
           this.pgns = data.objects.map((game) => game.moves);
-          console.log(this.pgns);
+         // console.log(this.pgns);
           this.positions = new Array(data.length).fill("start");
         })
         .catch((error) => {
@@ -122,11 +122,15 @@ export default {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Create two equally sized columns */
   gap: 10px; /* Add some space between the moves */
+  max-height: 400px;
+  overflow: scroll;
+  padding-right:35px;
 }
 .d-flex {
   display: flex;
   margin: 0 auto;
   max-width: 1000px;
+  padding-bottom:50px;
 }
 p{
     margin-block-start: 0;
