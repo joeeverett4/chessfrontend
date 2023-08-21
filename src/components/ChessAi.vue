@@ -5,7 +5,12 @@
       v-for="(outerArray, outerIndex) in nestedArray"
       :key="outerIndex"
     >
+      <!-- WHite player -->
+      <!-- Black player -->
+      <p>{{names[outerIndex]?.white}}</p>
+      <p>{{names[outerIndex]?.black}}</p>
       <chessboard :fen="positions[outerIndex]" />
+
       <div class="controls">
         <button @click="goToMove(-1, outerIndex)" :disabled="count === 0">
           Previous
@@ -19,7 +24,9 @@
       </div>
       <div class="move-grid">
         <div v-for="(innerObject, innerIndex) in outerArray" :key="innerIndex">
-          <p :style="getParagraphStyle(outerArray[innerIndex + 1]?.next_mistake)">
+          <p
+            :style="getParagraphStyle(outerArray[innerIndex + 1]?.next_mistake)"
+          >
             {{ innerObject.move }}
           </p>
         </div>
@@ -44,6 +51,7 @@ export default {
       pgns: [],
       positions: [],
       count: 0,
+      names: [],
     };
   },
   mounted() {
@@ -105,7 +113,14 @@ export default {
           console.log(data.objects); // Display the fetched games data in the console
           // Initialize the pgnArray with individual PGNs
           this.pgns = data.objects.map((game) => game.moves);
-         // console.log(this.pgns);
+          // console.log(this.pgns);
+          this.names = data.objects.map((game) => ({
+            black: game.players.black.user.name,
+            white: game.players.white.user.name,
+          }));
+
+          console.log(this.names) 
+
           this.positions = new Array(data.length).fill("start");
         })
         .catch((error) => {
@@ -124,16 +139,16 @@ export default {
   gap: 10px; /* Add some space between the moves */
   max-height: 400px;
   overflow: scroll;
-  padding-right:35px;
+  padding-right: 35px;
 }
 .d-flex {
   display: flex;
   margin: 0 auto;
   max-width: 1000px;
-  padding-bottom:50px;
+  padding-bottom: 50px;
 }
-p{
-    margin-block-start: 0;
-    margin-block-end:0;
+p {
+  margin-block-start: 0;
+  margin-block-end: 0;
 }
 </style>
