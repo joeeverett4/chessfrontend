@@ -126,7 +126,7 @@ export default {
 },
 
     goToMove(step, chessboardIndex) {
-  console.log("goToMove");
+  console.log("goToMoves");
   if (
     this.counts[chessboardIndex] + step >= 0 &&
     this.counts[chessboardIndex] + step <
